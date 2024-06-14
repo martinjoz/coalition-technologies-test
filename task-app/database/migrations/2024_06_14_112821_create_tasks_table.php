@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
+            $table->string('name',130);
+            $table->smallInteger('priority');// 1 for high, 2 for medium and 3 for low priority
+            $table->softDeletes();
             $table->timestamps();
         });
     }
