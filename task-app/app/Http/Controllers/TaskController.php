@@ -64,12 +64,24 @@ class TaskController extends Controller
 
     public function sortTask(Request $request)
     {
-        $tasks = $request->tasks;
+        // Decode the JSON data to an array
+        $tasks = $request->json()->all();
 
-        foreach ($tasks as $index => $taskId) {
-            Task::where('id', $taskId)->update(['priority' => $index + 1]);
+        // Loop through each task and access the id and name
+        $index=0;
+        foreach ($tasks as $task) {
+            $taskId = $task['id'];
+            
+            // Update the task's priority based on the index
+            try {
+                Task::where('id', $taskId)->update(['priority1' => $index + 1]);
+                return response()->json(['status' => 'success','message'=>'Tasks updated successfully!']);
+            } catch (\Throwable $th) {
+                return response()->json(['status' => 'error','message'=>'Error updating tasks. Please try again later.','error'=>$th->getMessage()]);
+            }
+    
+            // Increment the counter
+            $index++;
         }
-
-        return response()->json(['status' => 'success']);
     }
 }
