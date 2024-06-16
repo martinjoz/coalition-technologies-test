@@ -8,4 +8,6 @@ use App\Http\Controllers\TaskController;
 // });
 
 Route::resource('tasks',TaskController::class);
+
 Route::post('/sort-tasks', [TaskController::class, 'sortTask'])->name('sort-tasks');
+

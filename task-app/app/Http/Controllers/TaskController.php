@@ -45,21 +45,32 @@ class TaskController extends Controller
 
     public function update(Request $request, Task $task)
     {
-        $request->validate([
-            'name' => 'required|string|max:255'
-        ]);
-
         $task->update([
             'name' => $request->name
         ]);
 
-        return redirect()->route('tasks');
+        return back();
     }
 
-    public function destroy(Task $task)
+    public function destroy($id)
     {
+        // Find the task to be deleted
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json(['status' => 'Task not found'], 404);
+        }
+
+        // Get the priority of the task being deleted
+        $deletedTaskPriority = $task->priority;
+
+        // Delete the task
         $task->delete();
-        return redirect()->route('tasks');
+
+        // Decrement the priorities of tasks with higher priority
+        Task::where('priority', '>', $deletedTaskPriority)->decrement('priority');
+
+        return response()->json(['status' => 'Task deleted successfully']);
     }
 
     public function sortTask(Request $request)
@@ -73,15 +84,11 @@ class TaskController extends Controller
             $taskId = $task['id'];
             
             // Update the task's priority based on the index
-            try {
-                Task::where('id', $taskId)->update(['priority1' => $index + 1]);
-                return response()->json(['status' => 'success','message'=>'Tasks updated successfully!']);
-            } catch (\Throwable $th) {
-                return response()->json(['status' => 'error','message'=>'Error updating tasks. Please try again later.','error'=>$th->getMessage()]);
-            }
+            Task::where('id', $taskId)->update(['priority' => $index + 1]);
     
             // Increment the counter
             $index++;
         }
+        return response()->json(['status' => 'task updated successfully']);
     }
 }
