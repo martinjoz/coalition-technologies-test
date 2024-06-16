@@ -102,7 +102,7 @@
       background-color: #00b919;
     }
     .delete-task-button{
-      background-color: #FF6B6B;
+      background-color: #ff3e3e;
     }
        .edit-task-button,
     .delete-task-button {
@@ -117,7 +117,7 @@
       background-color: #00b919b5;
     }
     .delete-task-button:hover {
-      background-color: #ff8181;
+      background-color: #ff5050de;
     }
   </style>
 </head>
